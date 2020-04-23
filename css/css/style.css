@@ -1,0 +1,173 @@
+.open > .dropdown-toggle.btn-default {
+  color: #ffffff;
+  background-color: #798d8f;
+  border-color: #74898a;
+  
+}
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus{
+background-color:#4c5181;
+
+}
+.nav > li > a:hover, .nav > li > a:focus{
+background-color:#33396b;
+
+}
+
+.bootstrap-datetimepicker-widget{
+	background-color:#fff !important;
+	z-index:1151;
+	border:1px solid #888888;
+	box-shadow:5px 5px 4px #888888;
+	border-radius:0px 0px 0px 0px;
+}
+
+.customSelectRS>.dropdown-toggle{
+	background-color:#fff !important;
+	color:#000;
+	border:2px solid #dce4ec;
+}
+
+.customSelectRS>.dropdown-toggle:focus{
+	background-color:#fff !important;
+	color:#000;
+	border:2px solid #000;
+}
+
+.customSelectRS>.dropdown-menu{
+	background-color:#fff !important;
+	z-index:1151;
+	border:1px solid #888888;
+	box-shadow:5px 5px 4px #888888;
+	border-radius:0px 0px 0px 0px;
+}
+
+.modal{
+	overflow-y:auto;
+}
+
+.well-sm {
+  padding: 9px;
+  border-radius: 3px;
+  background-color:#19b8be;
+  border-color: #0f6e71;
+  color:#fff;
+}
+
+.fixed-table-pagination .dropup .dropdown-menu {
+    margin-bottom: 0;
+	background-color:#fff !important;
+	z-index:1151;
+	border:1px solid #888888;
+	box-shadow:5px 5px 4px #888888;
+	border-radius:0px 0px 0px 0px;
+}
+
+.btn-group > .btn,
+.btn-group-vertical > .btn {
+  position: relative;
+  float: left;
+  background-color:#fff !important;
+  color:#000;
+  border:2px solid #dce4ec;
+}
+
+.btn-group > .btn:hover,
+.btn-group-vertical > .btn:hover,
+.btn-group > .btn:focus,
+.btn-group-vertical > .btn:focus,
+.btn-group > .btn:active,
+.btn-group-vertical > .btn:active,
+.btn-group > .btn.active,
+.btn-group-vertical > .btn.active {
+  z-index: 1151;
+  border:2px solid #000;
+}
+
+.btn-default:active:hover,
+.btn-default.active:hover,
+.open > .dropdown-toggle.btn-default:hover,
+.btn-default:active:focus,
+.btn-default.active:focus,
+.open > .dropdown-toggle.btn-default:focus,
+.btn-default:active.focus,
+.btn-default.active.focus,
+.open > .dropdown-toggle.btn-default.focus {
+  background-color:#fff !important;
+  color:#000;
+  border:2px solid #000;
+}
+
+.unavailable-drug{
+	color:#d62c1a;
+}
+
+.alternative-drug{
+	color:#4abf74;
+}
+
+.medicine-out-of-stock{
+	background-color:#d62c1a;
+}
+
+.medicine-out-of-stock-pharmacy{
+	color:#d62c1a;
+}
+
+.medicine-alternative-pharmacy{
+	color:#4abf74;
+}	
+
+#queue-active{
+background-color:#948cbe;
+padding:0px;
+height:686px;
+}
+
+#queue-temp{
+background-color:#cbc6c3;
+padding:0px;
+height:686px;
+}
+
+#queue-claim{
+background-color:#00aa4b;
+padding:0px;
+height:686px;
+}
+
+#queueaja{
+height:686px;
+width:30%;
+margin-top:-2.8%;
+margin-left:51%;
+padding:0px;
+float:right;
+position:fixed;
+}
+
+#queueadmin{
+background-color:#ffffff;
+height:686px;
+width:15%;
+margin-top:-2.8%;
+margin-left:66.5%;
+padding:0px;
+float:right;
+position:fixed;
+}
+
+#queuelab{
+background-color:#ffffff;
+height:686px;
+width:37%;
+margin-top:-2.8%;
+margin-left:44.5%;
+padding:0px;
+float:right;
+position:fixed;
+}
+
+#textArea{
+resize:none;
+}
+

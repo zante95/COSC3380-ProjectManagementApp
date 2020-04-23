@@ -1,0 +1,32 @@
+body{
+padding:0px;
+margin:0px;
+background-color:rgb(255, 255, 255);
+}
+
+#headline{
+color:rgb(0, 0, 0);
+font-size:60px;
+
+}
+
+#loginpane{
+background-color:rgb(214, 214, 214);
+border-radius:40px;
+}
+
+#label1{
+color:rgb(0, 0, 0);
+}
+
+#inputPwd, #inputUserID{
+background-color:transparent;
+color:rgb(0, 0, 0);
+border-color: rgb(255, 255, 255);
+}
+
+#inputPwd:focus, #inputUserID:focus{
+background-color:transparent;
+color:rgb(0, 0, 0);
+border-color: rgb(0, 0, 0);
+}

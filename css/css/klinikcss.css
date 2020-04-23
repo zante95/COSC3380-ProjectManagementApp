@@ -1,0 +1,94 @@
+#queue{
+background-color:#ffffff;
+height:646px;
+margin-top:-4.5%;
+margin-left:48.5%;
+padding:0px;
+position:fixed;
+}
+
+#queue1{
+background-color:#948cbe;
+padding:0px;
+height:686px;
+}
+#queue2{
+background-color:#cbc6c3;
+height:686px;
+float:right;
+padding:0px;
+}
+#queue0{
+width:10px;
+height:646px;
+padding:0px;
+margin:0px;
+}
+
+#header1{
+background-color:#291856;
+}
+#headertext1{
+color:#fff;
+
+}
+
+
+#diagtext1{
+height:150px;
+width:300px;
+resize:none;
+}
+
+#buttonadd1{
+margin-left:16%;
+margin-top:-1%;
+}
+#buttonadd2{
+
+}
+#textkontak{
+width:193%;
+}
+#table1{
+
+}
+#buttoncancel{
+background-color:#df0024;
+color:#fff;
+border-color:#e2342d;
+}
+#buttonsubmit{
+background-color:#2eb4c0;
+color:#fff;
+border-color:#3fb8c1;
+}
+/* div dalam container tengah */
+#middle{
+
+margin-top:5%;
+}
+#middlelower{
+
+padding:0px;
+margin-left:1%;
+}
+/* div dalam container tengah */
+
+/* table*/
+#headtable{
+background-color:#291856;
+color:#fff;
+}
+.bootstrap-table .table{
+background-color:#948cbe;
+}
+/* table*/
+
+.fixed-content {
+    top: 0;
+    bottom:0;
+    position:fixed;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}

@@ -1,0 +1,37 @@
+body{
+	margin:0px;
+	padding:0px;
+}
+*{
+	font-family:calibri;
+	font-size:16px;
+}
+div{
+	position:relative;
+}
+hr{
+	border:none;
+	margin:0px;
+	padding:0px;
+	background:#C4AE7D;
+	color:#C4AE7D;
+}
+
+.clear{
+	clear:both;
+}
+
+#G_Body{
+	position:absolute;
+	top:0px;
+	left:50px;
+	right:0px;
+	min-height:600px;
+	z-index:5;
+	padding:0px 10px;
+	overflow:auto;
+	overflow-y:scroll;
+}
+#G_Body>table{
+	margin-top:10px;
+}

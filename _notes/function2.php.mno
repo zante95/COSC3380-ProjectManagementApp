@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="UD_Recordset1" value="name:ProjectID;datatype:int,name:ProjectName;datatype:string,name:ProjectLeaderID;datatype:int,name:FlagStatus;datatype:string,name:Revenue;datatype:int,name:NetGainOrLoss;datatype:int,name:Start_Date;datatype:date,name:End_Date;datatype:date" />
+</info>
