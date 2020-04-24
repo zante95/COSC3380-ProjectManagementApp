@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 23, 2020 at 01:45 PM
+-- Generation Time: Apr 24, 2020 at 03:14 PM
 -- Server version: 5.6.46-cll-lve
 -- PHP Version: 7.2.7
 
@@ -21,13 +21,14 @@ SET time_zone = "+00:00";
 --
 -- Database: `projectmanagementapp`
 --
+CREATE DATABASE IF NOT EXISTS `projectmanagementapp` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `projectmanagementapp`;
 
 DELIMITER $$
 --
 -- Procedures
 --
-DROP PROCEDURE IF EXISTS `user_auth`$$
-CREATE DEFINER=`cpses_nawf8asm70`@`localhost` PROCEDURE `user_auth` (IN `user_name` CHAR(15), IN `pass` VARCHAR(20))  BEGIN
+CREATE DEFINER=`cpses_naovjre5vf`@`localhost` PROCEDURE `user_auth` (IN `user_name` CHAR(15), IN `pass` VARCHAR(20))  BEGIN
 	SELECT USER_LOGIN.Username, USER_LOGIN.salt INTO @id, @salt FROM USER_LOGIN WHERE USER_LOGIN.username = user_name;
 	IF (SELECT COUNT(USER_LOGIN.Username) FROM USER_LOGIN WHERE USER_LOGIN.Username = user_name AND USER_LOGIN.PasswordHash = UNHEX(SHA1(CONCAT(HEX(@salt), pass)))) != 1 THEN
 		SET @message_text = 'Login incorrect';
@@ -37,10 +38,9 @@ CREATE DEFINER=`cpses_nawf8asm70`@`localhost` PROCEDURE `user_auth` (IN `user_na
 	END IF;
 END$$
 
-DROP PROCEDURE IF EXISTS `user_create`$$
-CREATE DEFINER=`cpses_nawf8asm70`@`localhost` PROCEDURE `user_create` (IN `user_name` VARCHAR(15), IN `pass` VARCHAR(20))  BEGIN
+CREATE DEFINER=`cpses_naovjre5vf`@`localhost` PROCEDURE `user_create` (IN `user_name` VARCHAR(15), IN `pass` VARCHAR(20))  BEGIN
 	IF (SELECT COUNT(USER_LOGIN.Username) FROM USER_LOGIN WHERE USER_LOGIN.Username = user_name) > 0 THEN
-		SET @message_text = CONCAT('Username '', user_name, '' already exists');
+		SET @message_text = CONCAT('Username \'', user_name, '\' already exists');
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @message_text;
 	ELSE
 		SET @salt = UNHEX(SHA1(CONCAT(RAND(), RAND(), RAND())));
@@ -52,7 +52,6 @@ END$$
 --
 -- Functions
 --
-DROP FUNCTION IF EXISTS `Check_Leader_ID`$$
 $$
 
 DELIMITER ;
@@ -63,21 +62,17 @@ DELIMITER ;
 -- Table structure for table `ASSIGNED_MENU`
 --
 
-DROP TABLE IF EXISTS `ASSIGNED_MENU`;
-CREATE TABLE IF NOT EXISTS `ASSIGNED_MENU` (
-  `AssignedID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ASSIGNED_MENU` (
+  `AssignedID` int(6) NOT NULL,
   `MenuID` int(6) NOT NULL,
-  `Username` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`AssignedID`),
-  KEY `MenuID` (`MenuID`),
-  KEY `Username` (`Username`)
-) ENGINE=MyISAM AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+  `Username` varchar(15) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `ASSIGNED_MENU`
 --
 
-INSERT INTO `ASSIGNED_MENU` (`AssignedID`, `MenuID`, `Username`) VALUES
+REPLACE INTO `ASSIGNED_MENU` (`AssignedID`, `MenuID`, `Username`) VALUES
 (1, 1, 'jlimano'),
 (2, 2, 'jlimano'),
 (3, 3, 'jlimano'),
@@ -124,23 +119,20 @@ INSERT INTO `ASSIGNED_MENU` (`AssignedID`, `MenuID`, `Username`) VALUES
 -- Table structure for table `BUDGET`
 --
 
-DROP TABLE IF EXISTS `BUDGET`;
-CREATE TABLE IF NOT EXISTS `BUDGET` (
-  `BudgetID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `BUDGET` (
+  `BudgetID` int(6) NOT NULL,
   `ProjectID` int(6) NOT NULL,
   `ItemName` varchar(25) DEFAULT NULL,
   `AllocationCost` double DEFAULT NULL,
   `EmpID` int(6) DEFAULT NULL,
-  `WorksID` int(6) DEFAULT NULL,
-  PRIMARY KEY (`BudgetID`),
-  KEY `ProjectID` (`ProjectID`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+  `WorksID` int(6) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `BUDGET`
 --
 
-INSERT INTO `BUDGET` (`BudgetID`, `ProjectID`, `ItemName`, `AllocationCost`, `EmpID`, `WorksID`) VALUES
+REPLACE INTO `BUDGET` (`BudgetID`, `ProjectID`, `ItemName`, `AllocationCost`, `EmpID`, `WorksID`) VALUES
 (1, 1, 'SALARY INFO', 5580, 5, NULL),
 (2, 1, 'SALARY INFO', 5550, 4, NULL),
 (3, 1, 'SALARY INFO', 5580, 6, NULL),
@@ -167,25 +159,22 @@ INSERT INTO `BUDGET` (`BudgetID`, `ProjectID`, `ItemName`, `AllocationCost`, `Em
 (24, 1, 'SALARY INFO', 30.5, 5, 155),
 (25, 1, 'SALARY INFO', 69, 4, 156),
 (32, 1, 'overtime food reimburse', 150, NULL, NULL),
-(31, 1, 'transport reimburse', 500, NULL, NULL),
-(39, 1, 'salary', 0, 4, NULL),
+(31, 1, 'transport reimburse', 520, NULL, NULL),
 (40, 1, 'SALARY INFO', 75, 6, 165),
-(41, 1, 'SALARY INFO', 75, 6, 166);
+(41, 1, 'SALARY INFO', 75, 6, 166),
+(44, 1, 'SALARY INFO', 30.5, 5, 167);
 
 --
 -- Triggers `BUDGET`
 --
-DROP TRIGGER IF EXISTS `Delete_BUDGET_Trigger`;
 DELIMITER $$
 CREATE TRIGGER `Delete_BUDGET_Trigger` AFTER DELETE ON `BUDGET` FOR EACH ROW UPDATE `PROJECT` SET PROJECT.NetGainOrLoss = PROJECT.Revenue - (SELECT SUM(AllocationCost) FROM `BUDGET` WHERE BUDGET.ProjectID = PROJECT.ProjectID) WHERE OLD.ProjectID = PROJECT.ProjectID
 $$
 DELIMITER ;
-DROP TRIGGER IF EXISTS `UPDATE_PROJECT_ON_INsERT`;
 DELIMITER $$
 CREATE TRIGGER `UPDATE_PROJECT_ON_INsERT` AFTER INSERT ON `BUDGET` FOR EACH ROW UPDATE `PROJECT` SET PROJECT.NetGainOrLoss = PROJECT.Revenue - (SELECT SUM(AllocationCost) FROM `BUDGET` WHERE BUDGET.ProjectID = PROJECT.ProjectID) WHERE NEW.ProjectID = PROJECT.ProjectID
 $$
 DELIMITER ;
-DROP TRIGGER IF EXISTS `UPDATE_PROJECT_ON_UPDATE`;
 DELIMITER $$
 CREATE TRIGGER `UPDATE_PROJECT_ON_UPDATE` AFTER UPDATE ON `BUDGET` FOR EACH ROW UPDATE `PROJECT` SET PROJECT.NetGainOrLoss = PROJECT.Revenue - (SELECT SUM(AllocationCost) FROM `BUDGET` WHERE BUDGET.ProjectID = PROJECT.ProjectID) WHERE PROJECT.ProjectID = NEW.ProjectID
 $$
@@ -197,24 +186,21 @@ DELIMITER ;
 -- Table structure for table `CLIENT`
 --
 
-DROP TABLE IF EXISTS `CLIENT`;
-CREATE TABLE IF NOT EXISTS `CLIENT` (
-  `ClientID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `CLIENT` (
+  `ClientID` int(6) NOT NULL,
   `ProjectID` int(6) DEFAULT NULL,
   `ClientName` varchar(20) DEFAULT NULL,
   `Email` varchar(50) DEFAULT NULL,
   `Phone1` bigint(10) DEFAULT NULL,
-  `Phone2` bigint(10) DEFAULT NULL,
-  PRIMARY KEY (`ClientID`),
-  KEY `ProjectID` (`ProjectID`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+  `Phone2` bigint(10) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `CLIENT`
 --
 
-INSERT INTO `CLIENT` (`ClientID`, `ProjectID`, `ClientName`, `Email`, `Phone1`, `Phone2`) VALUES
-(1, 1, 'John Smith', 'johnsmith@xyz.net', 5698751289, 6485693321),
+REPLACE INTO `CLIENT` (`ClientID`, `ProjectID`, `ClientName`, `Email`, `Phone1`, `Phone2`) VALUES
+(1, 3, 'John Smith', 'johnsmith@xyz.net', 5698751289, 6485693321),
 (2, 2, 'Anna Flores', 'annaflores@zpayments.biz', 4895632212, 0),
 (3, 3, 'Brianna Floyd', 'bfloyd@viennawine.com', 3658975562, 0),
 (6, 12, 'David Smith', 'dmsith@gmail.com', 1324567894, 0);
@@ -225,22 +211,20 @@ INSERT INTO `CLIENT` (`ClientID`, `ProjectID`, `ClientName`, `Email`, `Phone1`, 
 -- Table structure for table `EMPLOYEE`
 --
 
-DROP TABLE IF EXISTS `EMPLOYEE`;
-CREATE TABLE IF NOT EXISTS `EMPLOYEE` (
-  `EmployeeID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `EMPLOYEE` (
+  `EmployeeID` int(6) NOT NULL,
   `EmployeeName` varchar(30) DEFAULT NULL,
   `Phone1` bigint(10) DEFAULT NULL,
   `Phone2` bigint(10) DEFAULT NULL,
   `Email` varchar(50) DEFAULT NULL,
-  `HourlyRate` double DEFAULT NULL,
-  PRIMARY KEY (`EmployeeID`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+  `HourlyRate` double DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `EMPLOYEE`
 --
 
-INSERT INTO `EMPLOYEE` (`EmployeeID`, `EmployeeName`, `Phone1`, `Phone2`, `Email`, `HourlyRate`) VALUES
+REPLACE INTO `EMPLOYEE` (`EmployeeID`, `EmployeeName`, `Phone1`, `Phone2`, `Email`, `HourlyRate`) VALUES
 (4, 'Daniel Botello', 7135971511, 2816206780, 'danielbotello2000@yahoo.com', 17.25),
 (5, 'Johannes Limano', 3465589090, 0, 'johannes.dominic@gmail.com', 15.25),
 (6, 'Violeta', 1234567891, 0, 'violeta@gmail.com', 15),
@@ -254,7 +238,6 @@ INSERT INTO `EMPLOYEE` (`EmployeeID`, `EmployeeName`, `Phone1`, `Phone2`, `Email
 --
 -- Triggers `EMPLOYEE`
 --
-DROP TRIGGER IF EXISTS `SALARY_UPDATE`;
 DELIMITER $$
 CREATE TRIGGER `SALARY_UPDATE` BEFORE UPDATE ON `EMPLOYEE` FOR EACH ROW IF (NEW.HourlyRate <= OLD.HourlyRate) THEN
         SET @message_text = CONCAT('new salary must be greater than current salary');
@@ -280,19 +263,17 @@ DELIMITER ;
 -- Table structure for table `MENU`
 --
 
-DROP TABLE IF EXISTS `MENU`;
-CREATE TABLE IF NOT EXISTS `MENU` (
-  `MenuID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `MENU` (
+  `MenuID` int(6) NOT NULL,
   `MenuName` varchar(30) NOT NULL,
-  `url` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`MenuID`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+  `url` varchar(50) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `MENU`
 --
 
-INSERT INTO `MENU` (`MenuID`, `MenuName`, `url`) VALUES
+REPLACE INTO `MENU` (`MenuID`, `MenuName`, `url`) VALUES
 (1, 'Manage Projects', 'index1.php'),
 (2, 'Manage Employees', 'employees.php'),
 (3, 'Manage Clients', 'client.php'),
@@ -308,29 +289,27 @@ INSERT INTO `MENU` (`MenuID`, `MenuName`, `url`) VALUES
 -- Table structure for table `PROJECT`
 --
 
-DROP TABLE IF EXISTS `PROJECT`;
-CREATE TABLE IF NOT EXISTS `PROJECT` (
-  `ProjectID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `PROJECT` (
+  `ProjectID` int(6) NOT NULL,
   `ProjectName` varchar(20) DEFAULT NULL,
   `ProjectLeaderID` int(6) NOT NULL,
   `FlagStatus` varchar(1) DEFAULT NULL,
   `Revenue` double DEFAULT NULL,
   `NetGainOrLoss` double DEFAULT NULL,
   `Start_Date` date DEFAULT NULL,
-  `End_Date` date DEFAULT NULL,
-  PRIMARY KEY (`ProjectID`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+  `End_Date` date DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `PROJECT`
 --
 
-INSERT INTO `PROJECT` (`ProjectID`, `ProjectName`, `ProjectLeaderID`, `FlagStatus`, `Revenue`, `NetGainOrLoss`, `Start_Date`, `End_Date`) VALUES
-(1, 'XYZ Car Rental', 4, 'A', 32000, 2990.5, '2020-03-21', '2020-07-21'),
-(2, 'Z Mobile E-Payments', 4, 'I', 50000, 9095, '2020-05-15', '2020-09-15'),
-(3, 'Vienna Wine Store', 4, 'I', 45000, 3254, '2020-07-08', '2020-11-12'),
+REPLACE INTO `PROJECT` (`ProjectID`, `ProjectName`, `ProjectLeaderID`, `FlagStatus`, `Revenue`, `NetGainOrLoss`, `Start_Date`, `End_Date`) VALUES
+(1, 'XYZ Car Rental', 4, 'A', 32000, 2940, '2020-03-21', '2020-07-21'),
+(2, 'Z Mobile E-Payments', 6, 'A', 50000, 8945, '2020-05-15', '2020-09-15'),
+(3, 'Vienna Wine Store', 7, 'A', 45000, 3254, '2020-07-08', '2020-11-11'),
 (12, 'Project Management D', 17, 'A', 55000, NULL, '2020-04-15', '2020-07-10'),
-(14, 'test project', 4, 'I', 55000, NULL, '2020-04-15', '2020-06-25');
+(14, 'test project', 4, 'I', 55000, 55000, '2020-04-15', '2020-06-25');
 
 -- --------------------------------------------------------
 
@@ -338,23 +317,21 @@ INSERT INTO `PROJECT` (`ProjectID`, `ProjectName`, `ProjectLeaderID`, `FlagStatu
 -- Table structure for table `TASK`
 --
 
-DROP TABLE IF EXISTS `TASK`;
-CREATE TABLE IF NOT EXISTS `TASK` (
-  `TaskID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `TASK` (
+  `TaskID` int(6) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
   `StartDate` date DEFAULT NULL,
   `DueDate` date DEFAULT NULL,
   `FinishDate` date DEFAULT NULL,
   `FlagStatus` varchar(1) DEFAULT NULL,
-  `FlagActive` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`TaskID`)
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+  `FlagActive` varchar(1) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `TASK`
 --
 
-INSERT INTO `TASK` (`TaskID`, `Description`, `StartDate`, `DueDate`, `FinishDate`, `FlagStatus`, `FlagActive`) VALUES
+REPLACE INTO `TASK` (`TaskID`, `Description`, `StartDate`, `DueDate`, `FinishDate`, `FlagStatus`, `FlagActive`) VALUES
 (1, 'Setting up the repository', '2020-03-21', '2020-03-21', '2020-03-21', 'C', 'A'),
 (2, 'Client meeting for  gathering requirements', '2020-03-23', '2020-03-23', '2020-03-23', 'C', 'A'),
 (3, 'Database Design', '2020-03-23', '2020-03-26', '2020-03-26', 'C', 'A'),
@@ -399,7 +376,7 @@ INSERT INTO `TASK` (`TaskID`, `Description`, `StartDate`, `DueDate`, `FinishDate
 (44, 'test', '2020-04-14', '2020-04-20', NULL, 'O', 'A'),
 (45, 'Meeting with Client', '2020-04-15', '2020-04-17', NULL, 'O', 'A'),
 (46, 'Development', '2020-04-20', '2020-06-15', NULL, 'U', 'A'),
-(47, 'Testing', '2020-06-16', '2020-07-20', NULL, 'U', 'A');
+(56, 'test task for project 1', '2020-04-24', '2020-04-24', NULL, 'O', 'A');
 
 -- --------------------------------------------------------
 
@@ -407,23 +384,19 @@ INSERT INTO `TASK` (`TaskID`, `Description`, `StartDate`, `DueDate`, `FinishDate
 -- Table structure for table `USER_LOGIN`
 --
 
-DROP TABLE IF EXISTS `USER_LOGIN`;
-CREATE TABLE IF NOT EXISTS `USER_LOGIN` (
+CREATE TABLE `USER_LOGIN` (
   `Username` varchar(15) NOT NULL,
   `ClientID` int(6) DEFAULT NULL,
   `EmployeeID` int(6) DEFAULT NULL,
   `PasswordHash` binary(20) NOT NULL,
-  `Salt` binary(20) NOT NULL,
-  PRIMARY KEY (`Username`),
-  KEY `ClientID` (`ClientID`),
-  KEY `EmployeeID` (`EmployeeID`)
+  `Salt` binary(20) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `USER_LOGIN`
 --
 
-INSERT INTO `USER_LOGIN` (`Username`, `ClientID`, `EmployeeID`, `PasswordHash`, `Salt`) VALUES
+REPLACE INTO `USER_LOGIN` (`Username`, `ClientID`, `EmployeeID`, `PasswordHash`, `Salt`) VALUES
 ('jlimano', NULL, 5, 0x1f41d4eb662a7ac416982375a180de385d5d14a7, 0xa72f4e4084173c6ebd91dbf4570ef55827ad1471),
 ('dbotello', NULL, 4, 0x11a950fb8709df9cfda156354067238a3b46bfd6, 0x634456351485af2f5189e75270e0e0f7f601d80f),
 ('violeta', NULL, 6, 0x4400a2dfd42a90ff5a572f033f13b74b8ebe00ca, 0x9a754862e7f6fffcd4011963860cb033977fd081),
@@ -441,24 +414,19 @@ INSERT INTO `USER_LOGIN` (`Username`, `ClientID`, `EmployeeID`, `PasswordHash`, 
 -- Table structure for table `WORKS_ON`
 --
 
-DROP TABLE IF EXISTS `WORKS_ON`;
-CREATE TABLE IF NOT EXISTS `WORKS_ON` (
-  `WorksID` int(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `WORKS_ON` (
+  `WorksID` int(6) NOT NULL,
   `ProjectID` int(6) NOT NULL,
   `EmployeeID` int(6) NOT NULL,
   `TaskID` int(6) NOT NULL,
-  `WorkingHours` double DEFAULT NULL,
-  PRIMARY KEY (`WorksID`),
-  KEY `ProjectID` (`ProjectID`),
-  KEY `EmployeeID` (`EmployeeID`),
-  KEY `TaskID` (`TaskID`)
-) ENGINE=MyISAM AUTO_INCREMENT=167 DEFAULT CHARSET=latin1;
+  `WorkingHours` double DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `WORKS_ON`
 --
 
-INSERT INTO `WORKS_ON` (`WorksID`, `ProjectID`, `EmployeeID`, `TaskID`, `WorkingHours`) VALUES
+REPLACE INTO `WORKS_ON` (`WorksID`, `ProjectID`, `EmployeeID`, `TaskID`, `WorkingHours`) VALUES
 (1, 1, 4, 1, 2),
 (2, 1, 5, 2, 3),
 (3, 1, 6, 2, 4),
@@ -610,17 +578,16 @@ INSERT INTO `WORKS_ON` (`WorksID`, `ProjectID`, `EmployeeID`, `TaskID`, `Working
 (154, 1, 5, 8, 1),
 (155, 1, 5, 8, 2),
 (165, 1, 6, 7, 5),
-(166, 1, 6, 9, 5);
+(166, 1, 6, 9, 5),
+(167, 1, 5, 56, 2);
 
 --
 -- Triggers `WORKS_ON`
 --
-DROP TRIGGER IF EXISTS `Delete_WO_Trigger`;
 DELIMITER $$
 CREATE TRIGGER `Delete_WO_Trigger` BEFORE DELETE ON `WORKS_ON` FOR EACH ROW DELETE FROM `BUDGET` WHERE OLD.WorksID = BUDGET.WorksID
 $$
 DELIMITER ;
-DROP TRIGGER IF EXISTS `Insert_WO_Trigger`;
 DELIMITER $$
 CREATE TRIGGER `Insert_WO_Trigger` BEFORE INSERT ON `WORKS_ON` FOR EACH ROW INSERT INTO BUDGET (ProjectID, ItemName, AllocationCost, EmpID, WorksID)
 VALUES (NEW.ProjectID, 'SALARY INFO',
@@ -634,7 +601,6 @@ VALUES (NEW.ProjectID, 'SALARY INFO',
        )
 $$
 DELIMITER ;
-DROP TRIGGER IF EXISTS `Update_WO_Trigger`;
 DELIMITER $$
 CREATE TRIGGER `Update_WO_Trigger` AFTER UPDATE ON `WORKS_ON` FOR EACH ROW UPDATE BUDGET
 SET BUDGET.AllocationCost = (
@@ -645,6 +611,125 @@ SET BUDGET.AllocationCost = (
 WHERE BUDGET.WorksID = NEW.WorksID
 $$
 DELIMITER ;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `ASSIGNED_MENU`
+--
+ALTER TABLE `ASSIGNED_MENU`
+  ADD PRIMARY KEY (`AssignedID`),
+  ADD KEY `MenuID` (`MenuID`),
+  ADD KEY `Username` (`Username`);
+
+--
+-- Indexes for table `BUDGET`
+--
+ALTER TABLE `BUDGET`
+  ADD PRIMARY KEY (`BudgetID`),
+  ADD KEY `ProjectID` (`ProjectID`);
+
+--
+-- Indexes for table `CLIENT`
+--
+ALTER TABLE `CLIENT`
+  ADD PRIMARY KEY (`ClientID`),
+  ADD KEY `ProjectID` (`ProjectID`);
+
+--
+-- Indexes for table `EMPLOYEE`
+--
+ALTER TABLE `EMPLOYEE`
+  ADD PRIMARY KEY (`EmployeeID`);
+
+--
+-- Indexes for table `MENU`
+--
+ALTER TABLE `MENU`
+  ADD PRIMARY KEY (`MenuID`);
+
+--
+-- Indexes for table `PROJECT`
+--
+ALTER TABLE `PROJECT`
+  ADD PRIMARY KEY (`ProjectID`);
+
+--
+-- Indexes for table `TASK`
+--
+ALTER TABLE `TASK`
+  ADD PRIMARY KEY (`TaskID`);
+
+--
+-- Indexes for table `USER_LOGIN`
+--
+ALTER TABLE `USER_LOGIN`
+  ADD PRIMARY KEY (`Username`),
+  ADD KEY `ClientID` (`ClientID`),
+  ADD KEY `EmployeeID` (`EmployeeID`);
+
+--
+-- Indexes for table `WORKS_ON`
+--
+ALTER TABLE `WORKS_ON`
+  ADD PRIMARY KEY (`WorksID`),
+  ADD KEY `ProjectID` (`ProjectID`),
+  ADD KEY `EmployeeID` (`EmployeeID`),
+  ADD KEY `TaskID` (`TaskID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `ASSIGNED_MENU`
+--
+ALTER TABLE `ASSIGNED_MENU`
+  MODIFY `AssignedID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- AUTO_INCREMENT for table `BUDGET`
+--
+ALTER TABLE `BUDGET`
+  MODIFY `BudgetID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT for table `CLIENT`
+--
+ALTER TABLE `CLIENT`
+  MODIFY `ClientID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `EMPLOYEE`
+--
+ALTER TABLE `EMPLOYEE`
+  MODIFY `EmployeeID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `MENU`
+--
+ALTER TABLE `MENU`
+  MODIFY `MenuID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `PROJECT`
+--
+ALTER TABLE `PROJECT`
+  MODIFY `ProjectID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `TASK`
+--
+ALTER TABLE `TASK`
+  MODIFY `TaskID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+
+--
+-- AUTO_INCREMENT for table `WORKS_ON`
+--
+ALTER TABLE `WORKS_ON`
+  MODIFY `WorksID` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=168;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

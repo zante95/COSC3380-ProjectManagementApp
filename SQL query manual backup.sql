@@ -136,6 +136,8 @@ INSERT INTO `ASSIGNED_MENU`(`MenuID`, `Username`) VALUES (8, 'yaseen');
 INSERT INTO `ASSIGNED_MENU`(`MenuID`, `Username`) VALUES (8, 'jdoe');
 INSERT INTO `ASSIGNED_MENU`(`MenuID`, `Username`) VALUES (8, 'jdoe2');
 INSERT INTO `ASSIGNED_MENU`(`MenuID`, `Username`) VALUES ('4','dsmith');
+INSERT INTO `ASSIGNED_MENU`(`MenuID`, `Username`) VALUES ('4','aflores');
+INSERT INTO `ASSIGNED_MENU`(`MenuID`, `Username`) VALUES ('4','bfloyd');
 
 INSERT INTO EMPLOYEE(EmployeeName, Phone1, Phone2, Email,  HourlyRate) VALUES ('Daniel Botello', '7135971511', '2816206780', 'danielbotello2000@yahoo.com', '15');
 INSERT INTO EMPLOYEE(EmployeeName, Phone1, Phone2, Email, HourlyRate) values('Johannes Limano','3465589090','','johannes.dominic@gmail.com','15');
