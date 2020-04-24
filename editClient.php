@@ -37,9 +37,9 @@ if (isset($_SERVER['QUERY_STRING'])) {
 }
 
 if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
-  $updateSQL = sprintf("UPDATE CLIENT SET ClientName=%s, ProjectID=%s, Email=%s, Phone1=%s, Phone2=%s WHERE ClientID=%s",
+  $updateSQL = sprintf("UPDATE CLIENT SET ProjectID=%s, ClientName=%s, Email=%s, Phone1=%s, Phone2=%s WHERE ClientID=%s",
+                       GetSQLValueString($_POST['select'], "int"),
                        GetSQLValueString($_POST['name'], "text"),
-                       GetSQLValueString($_POST['projectid'], "text"),
                        GetSQLValueString($_POST['email'], "text"),
                        GetSQLValueString($_POST['cell'], "int"),
                        GetSQLValueString($_POST['phone'], "int"),
@@ -65,6 +65,12 @@ $query_Recordset_edit = sprintf("SELECT * FROM CLIENT WHERE ClientID = %s", GetS
 $Recordset_edit = mysql_query($query_Recordset_edit, $remotesql) or die(mysql_error());
 $row_Recordset_edit = mysql_fetch_assoc($Recordset_edit);
 $totalRows_Recordset_edit = mysql_num_rows($Recordset_edit);
+
+mysql_select_db($database_remotesql, $remotesql);
+$query_Recordset1 = "SELECT ProjectID FROM PROJECT";
+$Recordset1 = mysql_query($query_Recordset1, $remotesql) or die(mysql_error());
+$row_Recordset1 = mysql_fetch_assoc($Recordset1);
+$totalRows_Recordset1 = mysql_num_rows($Recordset1);
 ?>
 <?php include 'Source/connect.php';?>
 <?php include('Module/Login/session.php'); ?>
@@ -182,9 +188,21 @@ $totalRows_Recordset_edit = mysql_num_rows($Recordset_edit);
 		      <input name="name" type="text" id="name" value="<?php echo $row_Recordset_edit['ClientName']; ?>">
 		    </p>
         <p>Project ID:
-		      <label for="projectid"></label>
-		      <input name="projectid" type="text" id="projectid" value="<?php echo $row_Recordset_edit['ProjectID']; ?>">
-		    </p>
+          <select name="select" id="select">
+            <?php
+do {  
+?>
+            <option value="<?php echo $row_Recordset1['ProjectID']?>"><?php echo $row_Recordset1['ProjectID']?></option>
+            <?php
+} while ($row_Recordset1 = mysql_fetch_assoc($Recordset1));
+  $rows = mysql_num_rows($Recordset1);
+  if($rows > 0) {
+      mysql_data_seek($Recordset1, 0);
+	  $row_Recordset1 = mysql_fetch_assoc($Recordset1);
+  }
+?>
+          </select>
+        </p>
             <p>Email:
               <label for="email"></label>
               <input name="email" type="text" id="email" value="<?php echo $row_Recordset_edit['Email']; ?>">
@@ -233,3 +251,8 @@ $totalRows_Recordset_edit = mysql_num_rows($Recordset_edit);
 </body>
 
 </html>
+<?php
+mysql_free_result($Recordset_edit);
+
+mysql_free_result($Recordset1);
+?>

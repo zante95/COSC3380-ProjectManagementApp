@@ -39,7 +39,7 @@ if (isset($_SERVER['QUERY_STRING'])) {
 if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
   $updateSQL = sprintf("UPDATE PROJECT SET ProjectName=%s, ProjectLeaderID=%s, FlagStatus=%s, Revenue=%s, Start_Date=%s, End_Date=%s WHERE ProjectID=%s",
                        GetSQLValueString($_POST['projectname'], "text"),
-                       GetSQLValueString($_POST['leaderid'], "int"),
+                       GetSQLValueString($_POST['leaderid0'], "int"),
                        GetSQLValueString($_POST['select'], "text"),
                        GetSQLValueString($_POST['revenue'], "double"),
                        GetSQLValueString($_POST['sdate'], "date"),
@@ -67,6 +67,12 @@ $Recordset1 = mysql_query($query_Recordset1, $remotesql) or die(mysql_error());
 $row_Recordset1 = mysql_fetch_assoc($Recordset1);
 $totalRows_Recordset1 = mysql_num_rows($Recordset1);
 
+mysql_select_db($database_remotesql, $remotesql);
+$query_Recordset2 = "SELECT EmployeeID FROM EMPLOYEE";
+$Recordset2 = mysql_query($query_Recordset2, $remotesql) or die(mysql_error());
+$row_Recordset2 = mysql_fetch_assoc($Recordset2);
+$totalRows_Recordset2 = mysql_num_rows($Recordset2);
+
 $colname_Recordset_Edit = "-1";
 if (isset($_GET['id'])) {
   $colname_Recordset_Edit = $_GET['id'];
@@ -75,6 +81,7 @@ mysql_select_db($database_remotesql, $remotesql);
 $query_Recordset_Edit = sprintf("SELECT * FROM PROJECT WHERE ProjectID = %s", GetSQLValueString($colname_Recordset_Edit, "int"));
 $Recordset_Edit = mysql_query($query_Recordset_Edit, $remotesql) or die(mysql_error());
 $row_Recordset_Edit = mysql_fetch_assoc($Recordset_Edit);
+
 ?>
 <?php include 'Source/connect.php';?>
 <?php include('Module/Login/session.php'); ?>
@@ -191,10 +198,26 @@ $row_Recordset_Edit = mysql_fetch_assoc($Recordset_Edit);
 		      <input name="projectname" type="text" id="projectname" value="<?php echo $row_Recordset1['ProjectName']; ?>">
 	        </p>
 		    <p>
-		      <label for="leaderid">Leader ID: </label>
-		      <input name="leaderid" type="text" id="leaderid" value="<?php echo $row_Recordset1['ProjectLeaderID']; ?>">
+		      <label for="leaderid">Leader ID: 
+               <select name="leaderid0" id="leaderid0">
+		        <?php
+do {  
+?>
+		        <option value="<?php echo $row_Recordset2['EmployeeID']?>"><?php echo $row_Recordset2['EmployeeID']?></option>
+		        <?php
+} while ($row_Recordset2 = mysql_fetch_assoc($Recordset2));
+  $rows = mysql_num_rows($Recordset2);
+  if($rows > 0) {
+      mysql_data_seek($Recordset2, 0);
+	  $row_Recordset2 = mysql_fetch_assoc($Recordset2);
+  }
+?>
+              </select></label>
+               
 		      <label for="revenue"></label>
-	        </p>
+	          <label for="select2"></label>
+		      
+		      
 		    <p>
 		      <label for="select">Flag Status: </label>
 		      <select name="select" id="select">
@@ -259,3 +282,8 @@ $row_Recordset_Edit = mysql_fetch_assoc($Recordset_Edit);
 </body>
 
 </html>
+<?php
+mysql_free_result($Recordset1);
+
+mysql_free_result($Recordset2);
+?>

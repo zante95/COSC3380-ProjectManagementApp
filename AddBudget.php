@@ -38,10 +38,10 @@ if (isset($_SERVER['QUERY_STRING'])) {
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
   $insertSQL = sprintf("INSERT INTO BUDGET (ProjectID, ItemName, AllocationCost, EmpID) VALUES (%s, %s, %s, %s)",
-                       GetSQLValueString($_POST['projectid'], "int"),
+                       GetSQLValueString($_POST['Pselect'], "int"),
                        GetSQLValueString($_POST['name'], "text"),
                        GetSQLValueString($_POST['cost'], "double"),
-                       GetSQLValueString($_POST['empID'], "int"));
+                       GetSQLValueString($_POST['selectE'], "int"));
 
   mysql_select_db($database_remotesql, $remotesql);
   $Result1 = mysql_query($insertSQL, $remotesql) or die(mysql_error());
@@ -59,6 +59,13 @@ $query_Recordset1 = "SELECT * FROM BUDGET";
 $Recordset1 = mysql_query($query_Recordset1, $remotesql) or die(mysql_error());
 $row_Recordset1 = mysql_fetch_assoc($Recordset1);
 $totalRows_Recordset1 = mysql_num_rows($Recordset1);
+
+mysql_select_db($database_remotesql, $remotesql);
+$query_Recordset2Project = "SELECT ProjectID FROM PROJECT";
+$Recordset2Project = mysql_query($query_Recordset2Project, $remotesql) or die(mysql_error());
+$row_Recordset2Project = mysql_fetch_assoc($Recordset2Project);
+$totalRows_Recordset2Project = mysql_num_rows($Recordset2Project);
+
 ?>
 <?php include 'Source/connect.php';?>
 <?php include('Module/Login/session.php'); ?>
@@ -165,12 +172,27 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
             </nav>
 
            <div class="content">
-            <h2>Add New Budget</h2>
+            <h2>Add Other Budget</h2>
 		  <form action="<?php echo $editFormAction; ?>" name="form1" method="POST">
 		    <p>
-		      <label for="projectid">Project ID:</label>
-		      <input type="text" name="projectid" id="projectid">
-	        </p>
+		      <label for="projectid">Project ID:
+		      
+		      <select name="Pselect" id="Pselect">
+		        <?php
+do {  
+?>
+		        <option value="<?php echo $row_Recordset2Project['ProjectID']?>"><?php echo $row_Recordset2Project['ProjectID']?></option>
+		        <?php
+} while ($row_Recordset2Project = mysql_fetch_assoc($Recordset2Project));
+  $rows = mysql_num_rows($Recordset2Project);
+  if($rows > 0) {
+      mysql_data_seek($Recordset2Project, 0);
+	  $row_Recordset2Project = mysql_fetch_assoc($Recordset2Project);
+  }
+?>
+              </select>
+              </label>
+		    </p>
 		    <p>
 		      <label for="name">Item Name: </label>
 		      <input type="text" name="name" id="name">
@@ -180,16 +202,14 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
 		      <label for="cost"></label>
 		      <input type="text" name="cost" id="cost">
 		    </p>
-		    <p>Employee ID:		    
-		      <label for="empID"></label>
-		      <input type="text" name="empID" id="empID">
-		    </p>
-		    <p>		      <br>
+		    
+        <p><br>
 		      <label for="checkbox"></label>
-	        </p>
-		    <p>
+	      </p>
+		    
+        <p>
 		      <input type="submit" name="button" id="button" value="Submit">
-            </p>
+        </p>
 		    <input type="hidden" name="MM_insert" value="form1">
 		  </form>
 		</div>
@@ -221,3 +241,8 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
 </body>
 
 </html>
+<?php
+mysql_free_result($Recordset1);
+
+mysql_free_result($Recordset2Project);
+?>

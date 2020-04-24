@@ -81,6 +81,9 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link href="css/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <link href="css/css/bootstrap-table.css" rel="stylesheet"/>
+
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="style2.css">
     <!-- Scrollbar Custom CSS -->
@@ -91,15 +94,67 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/jquery.min.js" ></script>
 		<script type="text/javascript" src="js/index.js" ></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="js/jquery.min.js" ></script>
+    <script src="Script/moment.min.js"></script>
+    <script src="Script/moment-with-locales.js"></script>
+	  <script src="Script/bootstrap-datetimepicker.js"></script>
+    <script src="Script/bootstrap-table.js"></script>
+    
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
     <script type="text/javascript">
-      $(function(){
-        $('#menu-logout').click(function(){
-        
-          window.location.href = "Module/Login/close.php";
-        
+        $(document).ready(function () {
+          $('#menu-logout').click(function(){
+              window.location.href = "Module/Login/close.php";
+          });
+
+          $('#sdate').datetimepicker({
+            format: 'YYYY-MM-DD'
+          });
+
+          $('#edate').datetimepicker({
+            format: 'YYYY-MM-DD'
+          });
+
+          $('#fdate').datetimepicker({
+            format: 'YYYY-MM-DD'
+          });
+
+          $('#buttonSubmit').click(function(){
+            var starting = $("#form1").find('input[name="sdate"]').val().trim();
+            var due = $("#form1").find('input[name="edate"]').val().trim();
+            var finish = $("#form1").find('input[name="fdate"]').val().trim();
+
+            if(due < starting || (finish < starting && finish != "")) {
+              $("#form1").submit(function(event) {
+                alert("Please select the correct due date and/or finish date");
+                event.preventDefault();
+              });
+            }
+            
+            else if(due >= starting) {
+              $('#form1').submit();
+            }
+          });
+
+          $("#sidebar").mCustomScrollbar({
+              theme: "minimal"
+          });
+
+          $('#sidebarCollapse').on('click', function () {
+              $('#sidebar, #content').toggleClass('active');
+              $('.collapse.in').toggleClass('in');
+              $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+          });
         });
-        
-      });
     </script>
     <style>
         img {
@@ -172,8 +227,8 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
             </nav>
 
             <div class="content">
-        <h2>Add New Task</h2>
-		  <form action="<?php echo $editFormAction; ?>" name="form1" method="POST">
+        <h2>Edit Task</h2>
+		  <form action="<?php echo $editFormAction; ?>" name="form1" id="form1" method="POST">
 		    <p>Task ID: 
 		      <label for="textfield"></label>
 		      <input name="textfield" type="text" id="textfield" value="<?php echo $row_Recordset1['TaskID']; ?>" readonly>
@@ -182,38 +237,71 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
 		      <label for="des"></label>
 		      <input name="des" type="text" id="des" value="<?php echo $row_Recordset1['Description']; ?>">
 		    </p>
-            <p>Start Date:
-              <label for="sdate"></label>
-              <input name="sdate" type="text" id="sdate" value="<?php echo $row_Recordset1['StartDate']; ?>">
-            </p>
-            <p>Due Date:
-              <label for="edate"></label>
-              <input name="edate" type="text" id="edate" value="<?php echo $row_Recordset1['DueDate']; ?>">
-            </p>
-            <p>Finish Date: 
-              <label for="fdate"></label>
-              <input name="fdate" type="text" id="fdate" value="<?php echo $row_Recordset1['FinishDate']; ?>">
-            </p>
+                    
+            <div class="row">
+              <div class="radio">
+              
+              <div class="col-lg-12 col-md-12">
+                <label for="sdate" class="control-label">Start Date</label>
+              </div>
+              
+              <div class="col-lg-12 col-md-12">
+                <input type="text" class="form-control" id="sdate" name="sdate" value="<?php echo $row_Recordset1['StartDate']; ?>" style="height:40px;margin-top:-2.5%;margin-bottom:5%;"/>
+              </div>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="radio">
+              
+              <div class="col-lg-12 col-md-12">
+                <label for="edate" class="control-label">Due Date</label>
+              </div>
+              
+              <div class="col-lg-12 col-md-12">
+                <input type="text" class="form-control" id="edate" name="edate" value="<?php echo $row_Recordset1['DueDate']; ?>" style="height:40px;margin-top:-2.5%;margin-bottom:5%;"/>
+              </div>
+              
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="radio">
+              
+              <div class="col-lg-12 col-md-12">
+                <label for="fdate" class="control-label">Finish Date</label>
+              </div>
+              
+              <div class="col-lg-12 col-md-12">
+                <input type="text" class="form-control" id="fdate" name="fdate" value="<?php echo $row_Recordset1['FinishDate']; ?>" style="height:40px;margin-top:-2.5%;margin-bottom:5%;"/>
+              </div>
+              
+              </div>
+            </div>
+
             <p>
               <label for="select"></label>
             Flag Status: 
             <label for="select"></label>
+            
             <select name="select" id="select" title="<?php echo $row_Recordset1['FlagStatus']; ?>">
-            <option value="C">C</option>
- 			 <option value="L">L</option>
-             <option value="O">O</option>
- 			 <option value="U">U</option>
+              <option value="C">Completed</option>
+ 			        <option value="L">Late</option>
+              <option value="O">Ongoing</option>
+ 			        <option value="U">Upcoming</option>
             </select>
             </p>
             <p>Flag Active: 
               <label for="select2"></label>
+              
               <select name="select2" id="select2" title="<?php echo $row_Recordset1['FlagActive']; ?>">
-              <option value="A">A</option>
- 			 <option value="D">D</option>
+                <option value="A">Active</option>
+ 			          <option value="D">Deleted(hidden)</option>
               </select>
             </p>
             <p>
-              <input type="submit" name="button" id="button" value="Submit">
+              <input type="submit" name="button" id="buttonSubmit" value="Submit">
             </p>
             <input type="hidden" name="MM_update" value="form1">
 		  </form>
@@ -223,28 +311,6 @@ $totalRows_Recordset1 = mysql_num_rows($Recordset1);
         </div>
     </div>
 
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-    <!-- jQuery Custom Scroller CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#sidebar").mCustomScrollbar({
-                theme: "minimal"
-            });
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar, #content').toggleClass('active');
-                $('.collapse.in').toggleClass('in');
-                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-            });
-        });
-    </script>
 </body>
 
 </html>

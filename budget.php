@@ -308,7 +308,7 @@ $queryString_Recordset_NotSalary = sprintf("&totalRows_Recordset_NotSalary=%d%s"
 		    </p>
 		  </form>
         <p>
-         <a href="AddBudget.php"> <input name="button" type="submit" class="leftTiyle" id="button" value="Add New Budget"></a>
+         <a href="AddBudget.php"> <input name="button" type="submit" class="leftTiyle" id="button" value="Add Other Budget"></a>
         </p>
         
         </div>
